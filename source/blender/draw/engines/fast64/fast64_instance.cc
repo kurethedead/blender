@@ -221,17 +221,17 @@ void Instance::render_sync()
 
   manager->begin_sync();
 
-  draw::hair_init();
-  draw::curves_init();
+  //draw::hair_init();
+  //draw::curves_init();
 
   begin_sync();
 
   DRW_render_object_iter(this, render, depsgraph, object_sync_render);
 
-  draw::hair_update(*manager);
-  draw::curves_update(*manager);
-  draw::hair_free();
-  draw::curves_free();
+  //draw::hair_update(*manager);
+  //draw::curves_update(*manager);
+  //draw::hair_free();
+  //draw::curves_free();
 
   //velocity.geometry_steps_fill();
 
@@ -242,7 +242,7 @@ void Instance::render_sync()
   /* TODO: Remove old draw manager calls. */
   DRW_render_instance_buffer_finish();
 
-  DRW_curves_update();
+  //DRW_curves_update();
 }
 
 /** \} */

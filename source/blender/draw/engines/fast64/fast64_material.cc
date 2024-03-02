@@ -58,8 +58,7 @@ MaterialPass MaterialModule::material_pass_get(Object *ob,
   PassMain::Sub matpass = MaterialPass();
 
   // TODO: we only need a single shader, but static_shader_get() returns GPUShader
-  matpass.gpumat = inst_.shaders.material_shader_get(
-      blender_mat, ntree, pipeline_type, geometry_type, use_deferred_compilation);
+  matpass.gpumat = inst_.shaders.material_shader_get(blender_mat, geometry_type, F3D_MESH); // if we ever have more shaders, pull info from blender_mat
 
   /* Returned material should be ready to be drawn. */
   BLI_assert(GPU_material_status(matpass.gpumat) == GPU_MAT_SUCCESS);
@@ -74,11 +73,11 @@ MaterialPass MaterialModule::material_pass_get(Object *ob,
 
   const bool is_transparent = GPU_material_flag_get(matpass.gpumat, GPU_MATFLAG_TRANSPARENT);
   if (is_transparent) {
-    /* Sub pass is generated later. */
+    /* Sub pass is generated later, so that we can sort by distance. */
     matpass.sub_pass = nullptr;
   }
   else {
-    ShaderKey shader_key(matpass.gpumat);
+    ShaderKey shader_key(matpass.gpumat, geometry_type);
 
     PassMain::Sub *shader_sub = shader_map_.lookup_or_add_cb(shader_key, [&]() {
       /* First time encountering this shader. Create a sub that will contain materials using it. */
@@ -89,6 +88,8 @@ MaterialPass MaterialModule::material_pass_get(Object *ob,
     if (shader_sub != nullptr) {
       /* Create a sub for this material as `shader_sub` is for sharing shader between materials. */
       matpass.sub_pass = &shader_sub->sub(GPU_material_get_name(matpass.gpumat));
+
+      // TODO: This calls shader_set() every time - unnecessary?
       matpass.sub_pass->material_set(*inst_.manager, matpass.gpumat);
     }
     else {
@@ -103,21 +104,19 @@ Material &MaterialModule::material_sync(Object *ob,
                                         ::Material *blender_mat,
                                         eMaterialGeometry geometry_type)
 {
-  MaterialKey material_key(blender_mat, geometry_type, ob->visibility_flag);
+  MaterialKey material_key(blender_mat, geometry_type);
 
   Material &mat = material_map_.lookup_or_add_cb(material_key, [&]() {
     Material mat;
     mat.shading = material_pass_get(ob, blender_mat, geometry_type);
-    mat.is_alpha_blend_transparent = GPU_material_flag_get(mat.shading.gpumat,
+    mat.is_transparent = GPU_material_flag_get(mat.shading.gpumat,
                                                            GPU_MATFLAG_TRANSPARENT);
     return mat;
   });
 
-  if (mat.is_alpha_blend_transparent) {
+  if (mat.is_transparent) {
     /* Transparent needs to use one sub pass per object to support reordering.
      * NOTE: Pre-pass needs to be created first in order to be sorted first. */
-    mat.overlap_masking.sub_pass = inst_.pipelines.forward.prepass_transparent_add(
-        ob, blender_mat, mat.shading.gpumat);
     mat.shading.sub_pass = inst_.pipelines.forward.material_transparent_add(
         ob, blender_mat, mat.shading.gpumat);
   }

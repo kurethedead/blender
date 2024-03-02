@@ -155,6 +155,16 @@ typedef struct MaterialLineArt {
   char _pad;
 } MaterialLineArt;
 
+typedef struct MaterialF3D {
+  float prim_color[4];
+  int draw_layer;
+  char is_transparent;
+  char g_cull_front;
+  char g_cull_back;
+  char _pad0; 
+  int _pad1, _pad2;
+} MaterialF3D;
+
 typedef enum eMaterialLineArtFlags {
   LRT_MATERIAL_MASK_ENABLED = (1 << 0),
   LRT_MATERIAL_CUSTOM_OCCLUSION_EFFECTIVENESS = (1 << 1),
@@ -241,6 +251,8 @@ typedef struct Material {
   /** Grease pencil color. */
   struct MaterialGPencilStyle *gp_style;
   struct MaterialLineArt lineart;
+
+  struct MaterialF3D f3d;
 } Material;
 
 /* **************** MATERIAL ********************* */

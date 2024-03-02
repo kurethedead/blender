@@ -108,8 +108,8 @@ PassMain::Sub *ForwardPipeline::material_opaque_add(::Material *blender_mat, GPU
                  "PipelineModule::material_add()");
 
   // TODO: don't read from blender_mat->blend_flag, read from f3d property
-  PassMain::Sub *pass = (blender_mat->blend_flag & MA_BL_CULL_BACKFACE) ? opaque_front_side_ps_ :
-                                                                          opaque_double_sided_ps_;
+  PassMain::Sub *pass = blender_mat.f3d.g_cull_back && blender_mat.f3d.g_cull_back ? opaque_double_sided_ps_ :
+                          (blender_mat.f3d.g_cull_front ? opaque_back_side_ps_ : opaque_front_side_ps_);
   has_opaque_ = true;
   return &pass->sub(GPU_material_get_name(gpumat));
 }
@@ -121,8 +121,11 @@ PassMain::Sub *ForwardPipeline::material_transparent_add(const Object *ob,
   DRWState state = DRW_STATE_WRITE_COLOR | DRW_STATE_BLEND_CUSTOM | DRW_STATE_DEPTH_LESS_EQUAL;
 
   // TODO: Don't read from blender_mat->blend_flag, read from f3d property
-  if (blender_mat->blend_flag & MA_BL_CULL_BACKFACE) {
+  if (blender_mat->f3d.g_cull_back) {
     state |= DRW_STATE_CULL_BACK;
+  }
+  if(blender_mat->f3d.g_cull_front) {
+    state |= DRW_STATE_CULL_FRONT;
   }
   has_transparent_ = true;
 

@@ -25,6 +25,18 @@ class Instance;
  *
  * \{ */
 
+/*
+Cached GPUMaterials are stored on blender::Material.gpumaterial.
+The uuid of the GPUMaterial is checked to see if a cached material is present.
+Thus, the uuid must be unique across all render engines.
+As of Blender 4.0. eevee uses 13 bits for its uuid (see eevee/eevee_private.h, the enum with VAR_...)
+eevee_next uses 9 bits for its uuid (see eevee_next/eevee_material.hh, shader_uuid_from_material_type())
+Thus, we set an arbitrary bit outside that range so that fast64 cached material uuids don't clash with eeevee/eevee_next.
+Note that the uuid only represents geometry/pipeline permutations in eevee, and that actual shader changes will regenerate cache.
+Thus fast64 will really only have one uuid value ever being used, since it only renders meshes in a simple forward pipeline.
+*/
+#define FAST64_SHADER_FLAG (1 << 31)
+
 enum eMaterialPipeline {
   MAT_PIPE_FORWARD = 0,
 };
@@ -33,7 +45,6 @@ enum eMaterialGeometry {
   /* These maps directly to object types. */
   MAT_GEOM_MESH = 0,
   MAT_GEOM_CURVES,
-  MAT_GEOM_GPENCIL,
 
   /* These maps to special shader. */
   MAT_GEOM_WORLD,
@@ -47,53 +58,13 @@ enum eMaterialGeometry {
 static inline void material_type_from_shader_uuid(uint64_t shader_uuid,
                                                   eMaterialGeometry &geometry_type)
 {
-  const uint64_t geometry_mask = ((1u << 4u) - 1u);
+  const uint64_t geometry_mask = (FAST64_SHADER_FLAG - 1u);
   geometry_type = static_cast<eMaterialGeometry>(shader_uuid & geometry_mask);
 }
 
-static inline uint64_t shader_uuid_from_material_type(
-    eMaterialGeometry geometry_type,
-    char blend_flags = 0)
+static inline uint64_t shader_uuid_from_material_type(eMaterialGeometry geometry_type)
 {
-  BLI_assert(geometry_type < (1 << 4));
-  uint64_t transparent_shadows = blend_flags & MA_BL_TRANSPARENT_SHADOW ? 1 : 0;
-  return geometry_type | (transparent_shadows << 10);
-}
-
-static inline eClosureBits shader_closure_bits_from_flag(const GPUMaterial *gpumat)
-{
-  eClosureBits closure_bits = eClosureBits(0);
-  if (GPU_material_flag_get(gpumat, GPU_MATFLAG_DIFFUSE)) {
-    closure_bits |= CLOSURE_DIFFUSE;
-  }
-  if (GPU_material_flag_get(gpumat, GPU_MATFLAG_TRANSPARENT)) {
-    closure_bits |= CLOSURE_TRANSPARENCY;
-  }
-  if (GPU_material_flag_get(gpumat, GPU_MATFLAG_TRANSLUCENT)) {
-    closure_bits |= CLOSURE_TRANSLUCENT;
-  }
-  if (GPU_material_flag_get(gpumat, GPU_MATFLAG_EMISSION)) {
-    closure_bits |= CLOSURE_EMISSION;
-  }
-  if (GPU_material_flag_get(gpumat, GPU_MATFLAG_GLOSSY)) {
-    closure_bits |= CLOSURE_REFLECTION;
-  }
-  if (GPU_material_flag_get(gpumat, GPU_MATFLAG_SUBSURFACE)) {
-    closure_bits |= CLOSURE_SSS;
-  }
-  if (GPU_material_flag_get(gpumat, GPU_MATFLAG_REFRACT)) {
-    closure_bits |= CLOSURE_REFRACTION;
-  }
-  if (GPU_material_flag_get(gpumat, GPU_MATFLAG_HOLDOUT)) {
-    closure_bits |= CLOSURE_HOLDOUT;
-  }
-  if (GPU_material_flag_get(gpumat, GPU_MATFLAG_AO)) {
-    closure_bits |= CLOSURE_AMBIENT_OCCLUSION;
-  }
-  if (GPU_material_flag_get(gpumat, GPU_MATFLAG_SHADER_TO_RGBA)) {
-    closure_bits |= CLOSURE_SHADER_TO_RGBA;
-  }
-  return closure_bits;
+  return geometry_type | FAST64_SHADER_FLAG;
 }
 
 static inline eMaterialGeometry to_material_geometry(const Object *ob)
@@ -101,8 +72,6 @@ static inline eMaterialGeometry to_material_geometry(const Object *ob)
   switch (ob->type) {
     case OB_CURVES:
       return MAT_GEOM_CURVES;
-    case OB_GPENCIL_LEGACY:
-      return MAT_GEOM_GPENCIL;
     default:
       return MAT_GEOM_MESH;
   }
@@ -117,14 +86,10 @@ struct MaterialKey {
   uint64_t options;
 
   MaterialKey(::Material *mat_,
-              eMaterialGeometry geometry,
-              short visibility_flags)
+              eMaterialGeometry geometry)
       : mat(mat_)
   {
-    options = shader_uuid_from_material_type(geometry, mat_->blend_flag);
-    //options = (options << 1) | (visibility_flags & OB_HIDE_SHADOW ? 0 : 1);
-    //options = (options << 1) | (visibility_flags & OB_HIDE_PROBE_CUBEMAP ? 0 : 1);
-    //options = (options << 1) | (visibility_flags & OB_HIDE_PROBE_PLANAR ? 0 : 1);
+    options = shader_uuid_from_material_type(geometry);
   }
 
   uint64_t hash() const
@@ -161,10 +126,12 @@ struct MaterialKey {
  */
 struct ShaderKey {
   GPUShader *shader;
+  uint64_t options;
 
-  ShaderKey(GPUMaterial *gpumat)
+  ShaderKey(GPUMaterial *gpumat, eMaterialGeometry geometry)
   {
     shader = GPU_material_get_shader(gpumat);
+    options = shader_uuid_from_material_type(geometry);
   }
 
   uint64_t hash() const
@@ -196,7 +163,7 @@ struct MaterialPass {
 };
 
 struct Material {
-  bool is_alpha_blend_transparent;
+  bool is_transparent;
   MaterialPass shading;
 };
 

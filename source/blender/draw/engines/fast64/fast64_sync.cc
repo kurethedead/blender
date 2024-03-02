@@ -106,8 +106,8 @@ void SyncModule::sync_mesh(Object *ob,
     return;
   }
 
-  bool is_alpha_blend = false;
-  float inflate_bounds = 0.0f;
+  //bool is_alpha_blend = false;
+  //float inflate_bounds = 0.0f;
   for (auto i : material_array.gpu_materials.index_range()) {
     GPUBatch *geom = mat_geom[i];
     if (geom == nullptr) {
@@ -128,7 +128,7 @@ void SyncModule::sync_mesh(Object *ob,
     //geometry_call(material.reflection_probe_prepass.sub_pass, geom, res_handle);
     //geometry_call(material.reflection_probe_shading.sub_pass, geom, res_handle);
 
-    is_alpha_blend = is_alpha_blend || material.is_alpha_blend_transparent;
+    //is_alpha_blend = is_alpha_blend || material.is_alpha_blend_transparent;
 
     ::Material *mat = GPU_material_get_material(gpu_material);
     //inst_.cryptomatte.sync_material(mat);
