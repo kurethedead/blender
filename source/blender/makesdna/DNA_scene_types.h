@@ -1905,6 +1905,10 @@ typedef struct SceneEEVEE {
   float light_threshold;
 } SceneEEVEE;
 
+typedef struct SceneFAST64 {
+  float ambient_light[4];
+} SceneFAST64;
+
 typedef struct SceneGpencil {
   float smaa_threshold;
   char _pad[4];
@@ -2065,6 +2069,7 @@ typedef struct Scene {
 
   struct SceneDisplay display;
   struct SceneEEVEE eevee;
+  struct SceneFAST64 fast64;
   struct SceneGpencil grease_pencil_settings;
   struct SceneHydra hydra;
 } Scene;

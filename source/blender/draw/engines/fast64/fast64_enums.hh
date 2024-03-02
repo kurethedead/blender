@@ -64,29 +64,4 @@ static inline eLightingType lighting_type_from_v3d_lighting(char lighting)
       return static_cast<eLightingType>(-1);
   }
 }
-
-enum class eShaderType {
-  MATERIAL = 0,
-  TEXTURE,
-};
-static constexpr int shader_type_len = static_cast<int>(eShaderType::TEXTURE) + 1;
-
-static inline eShaderType shader_type_from_v3d_shading(char shading)
-{
-  return shading == V3D_SHADING_TEXTURE_COLOR ? eShaderType::TEXTURE : eShaderType::MATERIAL;
-}
-
-static inline const char *get_name(eShaderType type)
-{
-  switch (type) {
-    case eShaderType::MATERIAL:
-      return "Material";
-    case eShaderType::TEXTURE:
-      return "Texture";
-    default:
-      BLI_assert_unreachable();
-      return "";
-  }
-}
-
 }  // namespace blender::fast64

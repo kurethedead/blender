@@ -212,7 +212,7 @@ RenderEngineType DRW_engine_viewport_fast64_type = {
     /*next*/ nullptr,
     /*prev*/ nullptr,
     /*idname*/ "BLENDER_FAST64",
-    /*name*/ N_("FAST64"),
+    /*name*/ N_("Fast64"),
     /*flag*/ RE_INTERNAL | RE_USE_PREVIEW | RE_USE_STEREO_VIEWPORT | RE_USE_GPU_CONTEXT,
     /*update*/ nullptr,
     /*render*/ &DRW_render_to_image,

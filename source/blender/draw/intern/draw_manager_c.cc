@@ -92,6 +92,7 @@
 #include "engines/eevee/eevee_engine.h"
 #include "engines/eevee_next/eevee_engine.h"
 #include "engines/external/external_engine.h"
+#include "engines/fast64/fast64_engine.h"
 #include "engines/gpencil/gpencil_engine.h"
 #include "engines/image/image_engine.h"
 #include "engines/overlay/overlay_engine.h"
@@ -3051,6 +3052,7 @@ void DRW_engines_register()
 {
   RE_engines_register(&DRW_engine_viewport_eevee_type);
   RE_engines_register(&DRW_engine_viewport_workbench_type);
+  RE_engines_register(&DRW_engine_viewport_fast64_type);
 
   DRW_engine_register(&draw_engine_gpencil_type);
   DRW_engine_register(&draw_engine_gpencil_next_type);

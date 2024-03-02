@@ -38,6 +38,7 @@ enum eShaderType {
 class ShaderModule {
  private:
   std::array<GPUShader *, MAX_SHADER_TYPE> shaders_;
+  std::array<GPUPass *, MAX_SHADER_TYPE> gpu_passes_;
 
   /** Shared shader module across all engine instances. */
   static ShaderModule *g_shader_module;
@@ -47,6 +48,8 @@ class ShaderModule {
   ~ShaderModule();
 
   GPUShader *static_shader_get(eShaderType shader_type);
+  GPUPass *generate_pass(GPUMaterial *material, GPUNodeGraph *graph, eShaderType shader_type);
+  GPUMaterial *material_shader_get(::Material *blender_mat, eMaterialGeometry geometry_type, eShaderType shader_type);
 
   /** Only to be used by Instance constructor. */
   static ShaderModule *module_get();
