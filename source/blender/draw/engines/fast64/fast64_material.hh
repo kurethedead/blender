@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "DRW_render.hh"
+#include "DRW_render.h"
 
 #include "BLI_map.hh"
 #include "BLI_vector.hh"
@@ -208,7 +208,7 @@ class MaterialModule {
  private:
   Material &material_sync(Object *ob,
                           ::Material *blender_mat,
-                          eMaterialGeometry geometry_type,
+                          eMaterialGeometry geometry_type
                           );
 
   /** Return correct material or empty default material if slot is empty. */

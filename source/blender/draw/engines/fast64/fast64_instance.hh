@@ -13,7 +13,7 @@
 #include "BKE_object.hh"
 #include "DEG_depsgraph.hh"
 #include "DNA_lightprobe_types.h"
-#include "DRW_render.hh"
+#include "DRW_render.h"
 
 #include "fast64_camera.hh"
 #include "fast64_light.hh"

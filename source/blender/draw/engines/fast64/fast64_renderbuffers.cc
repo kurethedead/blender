@@ -17,7 +17,7 @@
 #include "GPU_framebuffer.h"
 #include "GPU_texture.h"
 
-#include "DRW_render.hh"
+#include "DRW_render.h"
 
 //#include "fast64_film.hh"
 #include "fast64_instance.hh"

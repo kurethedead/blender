@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "DRW_render.hh"
+#include "DRW_render.h"
 
 #include "fast64_camera.hh"
 #include "fast64_pipeline.hh"

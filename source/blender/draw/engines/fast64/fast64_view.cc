@@ -16,7 +16,7 @@
  */
 
 #include "BKE_global.h"
-#include "DRW_render.hh"
+#include "DRW_render.h"
 
 #include "fast64_instance.hh"
 
