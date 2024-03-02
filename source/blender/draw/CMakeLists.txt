@@ -165,6 +165,17 @@ set(SRC
   engines/eevee_next/eevee_view.cc
   engines/eevee_next/eevee_volume.cc
   engines/eevee_next/eevee_world.cc
+  engines/fast64/fast64_camera.cc
+  engines/fast64/fast64_engine.cc
+  engines/fast64/fast64_film.cc
+  engines/fast64/fast64_instance.cc
+  engines/fast64/fast64_light.cc
+  engines/fast64/fast64_material.cc
+  engines/fast64/fast64_pipeline.cc
+  engines/fast64/fast64_renderbuffers.cc
+  engines/fast64/fast64_shader.cc
+  engines/fast64/fast64_sync.cc
+  engines/fast64/fast64_view.cc
   engines/workbench/workbench_effect_antialiasing.cc
   engines/workbench/workbench_effect_cavity.cc
   engines/workbench/workbench_effect_dof.cc
@@ -304,6 +315,21 @@ set(SRC
   engines/eevee_next/eevee_view.hh
   engines/eevee_next/eevee_volume.hh
   engines/eevee_next/eevee_world.hh
+  engines/fast64/fast64_camera.hh
+  engines/fast64/fast64_defines.hh
+  engines/fast64/fast64_engine.h
+  engines/fast64/fast64_enums.hh
+  engines/fast64/fast64_film.hh
+  engines/fast64/fast64_instance.hh
+  engines/fast64/fast64_light.hh
+  engines/fast64/fast64_material.hh
+  engines/fast64/fast64_pipeline.hh
+  engines/fast64/fast64_private.hh
+  engines/fast64/fast64_renderbuffers.hh
+  engines/fast64/fast64_shader.hh
+  engines/fast64/fast64_shader_shared.hh
+  engines/fast64/fast64_sync.hh
+  engines/fast64/fast64_view.hh
   engines/external/external_engine.h
   engines/gpencil/gpencil_antialiasing.hh
   engines/gpencil/gpencil_engine.h
@@ -626,6 +652,16 @@ set(GLSL_SRC
 
   engines/eevee_next/eevee_defines.hh
   engines/eevee_next/eevee_shader_shared.hh
+
+  engines/fast64/shaders/fast64_attributes_lib.glsl
+  engines/fast64/shaders/fast64_film_comp.glsl
+  engines/fast64/shaders/fast64_film_frag.glsl
+  engines/fast64/shaders/fast64_film_lib.glsl
+  engines/fast64/shaders/fast64_geom_mesh_vert.glsl
+  engines/fast64/shaders/fast64_surf_forward_frag.glsl
+
+  engines/fast64/fast64_defines.hh
+  engines/fast64/fast64_shader_shared.hh
 
   engines/workbench/shaders/workbench_cavity_lib.glsl
   engines/workbench/shaders/workbench_common_lib.glsl
