@@ -12,7 +12,7 @@
 
 #include "BLI_map.hh"
 #include "BLI_vector.hh"
-#include "GPU_material.h"
+#include "GPU_material.hh"
 
 #include "fast64_sync.hh"
 
@@ -208,7 +208,7 @@ class MaterialModule {
  private:
   Material &material_sync(Object *ob,
                           ::Material *blender_mat,
-                          eMaterialGeometry geometry_type,
+                          eMaterialGeometry geometry_type
                           );
 
   /** Return correct material or empty default material if slot is empty. */

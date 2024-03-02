@@ -25,7 +25,6 @@ namespace blender::fast64 {
 static eLightType to_light_type(short blender_light_type)
 {
   switch (blender_light_type) {
-    default:
     case LA_LOCAL:
       return LIGHT_POINT;
     case LA_SUN:

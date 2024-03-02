@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later */
 
 /** \file
- * \ingroup eevee
+ * \ingroup fast64
  *
  * A film is a buffer (usually at display extent)
  * that will be able to accumulate sample in any distorted camera_type
@@ -21,10 +21,10 @@
 #include "DRW_render.hh"
 #include "RE_pipeline.h"
 
-#include "eevee_film.hh"
-#include "eevee_instance.hh"
+#include "fast64_film.hh"
+#include "fast64_instance.hh"
 
-namespace blender::eevee {
+namespace blender::fast64 {
 
 /* -------------------------------------------------------------------- */
 /** \name FilmData
@@ -34,7 +34,7 @@ inline bool operator==(const FilmData &a, const FilmData &b)
 {
   return (a.extent == b.extent) && (a.offset == b.offset) &&
          (a.render_extent == b.render_extent) && (a.render_offset == b.render_offset) &&
-         (a.filter_radius == b.filter_radius) && (a.scaling_factor == b.scaling_factor) &&
+         (a.scaling_factor == b.scaling_factor) &&
          (a.background_opacity == b.background_opacity);
 }
 
@@ -100,7 +100,7 @@ void Film::init(const int2 &extent, const rcti *output_rect)
     eGPUTextureFormat depth_format = GPU_R32F;
 
     int reset = 0;
-    reset += depth_tx_.ensure_2d(depth_format, data_.extent);
+    //reset += depth_tx_.ensure_2d(depth_format, data_.extent);
     reset += combined_tx_.current().ensure_2d(color_format, data_.extent);
     reset += combined_tx_.next().ensure_2d(color_format, data_.extent);
 
@@ -108,7 +108,7 @@ void Film::init(const int2 &extent, const rcti *output_rect)
 
       /* Avoid NaN in uninitialized texture memory making history blending dangerous. */
       combined_tx_.current().clear(float4(0.0f));
-      depth_tx_.clear(float4(0.0f));
+      //depth_tx_.clear(float4(0.0f));
     }
   }
 }
@@ -209,4 +209,4 @@ void Film::display()
 
 /** \} */
 
-}  // namespace blender::eevee
+}  // namespace blender::fast64

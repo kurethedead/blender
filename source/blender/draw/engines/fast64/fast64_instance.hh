@@ -98,11 +98,11 @@ class Instance {
       : shaders(*ShaderModule::module_get()),
         sync(*this),
         materials(*this),
-        pipelines(*this, uniform_data.data.pipeline),
+        pipelines(*this),
         lights(*this),
         camera(*this, uniform_data.data.camera),
-        render_buffers(*this, uniform_data.data.render_pass),
-        main_view(*this),
+        render_buffers(*this),
+        main_view(*this){};
         //capture_view(*this),
         //world(*this),
         //lookdev_view(*this),
@@ -143,7 +143,7 @@ class Instance {
 
   bool is_viewport() const
   {
-    return render == nullptr && !is_baking();
+    return render == nullptr;
   }
 
   bool is_viewport_image_render() const

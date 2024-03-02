@@ -192,7 +192,7 @@ bool SyncModule::sync_sculpt(Object *ob,
     //geometry_call(material.reflection_probe_prepass.sub_pass, geom, res_handle);
     //geometry_call(material.reflection_probe_shading.sub_pass, geom, res_handle);
 
-    is_alpha_blend = is_alpha_blend || material.is_alpha_blend_transparent;
+    is_alpha_blend = is_alpha_blend || material.is_transparent;
 
     GPUMaterial *gpu_material = material_array.gpu_materials[batch.material_slot];
     ::Material *mat = GPU_material_get_material(gpu_material);
