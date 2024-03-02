@@ -77,7 +77,7 @@ void Camera::init()
   }
 
   float overscan = 0.0f;
-  if ((inst_.scene->fast64.flag & SCE_FAST64_OVERSCAN) && (inst_.drw_view || inst_.render)) {
+  if ((inst_.scene->fast64.flag & SCE_EEVEE_OVERSCAN) && (inst_.drw_view || inst_.render)) {
     overscan = inst_.scene->fast64.overscan / 100.0f;
   }
   overscan_changed_ = assign_if_different(overscan_, overscan);
@@ -108,24 +108,25 @@ void Camera::sync()
   data.uv_scale = overscan_resolution / (camera_max - camera_min);
   data.uv_bias = -camera_min / (camera_max - camera_min);
 
-  if (inst_.is_baking()) {
-    /* Any view so that shadows and light culling works during irradiance bake. */
-    draw::View &view = inst_.irradiance_cache.bake.view_z_;
-    data.viewmat = view.viewmat();
-    data.viewinv = view.viewinv();
-    data.winmat = view.winmat();
-    data.type = CAMERA_ORTHO;
-
-    /* \note: Follow camera parameters where distances are positive in front of the camera. */
-    data.clip_near = -view.far_clip();
-    data.clip_far = -view.near_clip();
-    data.fisheye_fov = data.fisheye_lens = -1.0f;
-    data.equirect_bias = float2(0.0f);
-    data.equirect_scale = float2(0.0f);
-    data.uv_scale = float2(1.0f);
-    data.uv_bias = float2(0.0f);
-  }
-  else if (inst_.drw_view) {
+  //if (inst_.is_baking()) {
+  //  /* Any view so that shadows and light culling works during irradiance bake. */
+  //  draw::View &view = inst_.irradiance_cache.bake.view_z_;
+  //  data.viewmat = view.viewmat();
+  //  data.viewinv = view.viewinv();
+  //  data.winmat = view.winmat();
+  //  data.type = CAMERA_ORTHO;
+//
+  //  /* \note: Follow camera parameters where distances are positive in front of the camera. */
+  //  data.clip_near = -view.far_clip();
+  //  data.clip_far = -view.near_clip();
+  //  data.fisheye_fov = data.fisheye_lens = -1.0f;
+  //  data.equirect_bias = float2(0.0f);
+  //  data.equirect_scale = float2(0.0f);
+  //  data.uv_scale = float2(1.0f);
+  //  data.uv_bias = float2(0.0f);
+  //}
+  //else if (inst_.drw_view) {
+  if (inst_.drw_view) {
     DRW_view_viewmat_get(inst_.drw_view, data.viewmat.ptr(), false);
     DRW_view_viewmat_get(inst_.drw_view, data.viewinv.ptr(), true);
     if (overscan_ == 0.0f) {

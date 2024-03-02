@@ -84,18 +84,10 @@ struct LightsData {
 };
 BLI_STATIC_ASSERT_ALIGN(LightsData, 16)
 
-/* -------------------------------------------------------------------- */
-/** \name Uniform Data
- * \{ */
-
-/* Combines data from several modules to avoid wasting binding slots. */
-struct UniformData {
-  F3DState f3d_state;
-  LightData light_data;
+struct MaterialData {
+  F3DState f3d;
 };
-BLI_STATIC_ASSERT_ALIGN(UniformData, 16)
-
-/** \} */
+BLI_STATIC_ASSERT_ALIGN(MaterialData, 16)
 
 
 /* -------------------------------------------------------------------- */
@@ -185,11 +177,26 @@ struct FilmData {
 };
 BLI_STATIC_ASSERT_ALIGN(FilmData, 16)
 
+/* -------------------------------------------------------------------- */
+/** \name Uniform Data
+ * \{ */
+
+/* Combines data from several modules to avoid wasting binding slots. */
+struct UniformData {
+  FilmData film;
+  CameraData camera;
+  LightData light_data;
+};
+BLI_STATIC_ASSERT_ALIGN(UniformData, 16)
+
+/** \} */
+
 /* __cplusplus is true when compiling with MSL, so ensure we are not inside a shader. */
 #if defined(__cplusplus) && !defined(GPU_SHADER)
 
 using CameraDataBuf = draw::UniformBuffer<CameraData>;
 using UniformDataBuf = draw::UniformBuffer<UniformData>;
+using MaterialDataBuf = draw::UniformBuffer<MaterialData>;
 //using LightDataBuf = draw::StorageArrayBuffer<LightData, LIGHT_CHUNK>;
 using LightDataBuf = draw::UniformBuffer<LightsData>;
 

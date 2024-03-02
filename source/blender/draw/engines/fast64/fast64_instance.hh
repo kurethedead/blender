@@ -16,6 +16,7 @@
 #include "DRW_render.hh"
 
 #include "fast64_camera.hh"
+#include "fast64_film.hh"
 #include "fast64_light.hh"
 //#include "fast64_lookdev.hh"
 #include "fast64_material.hh"
@@ -51,6 +52,9 @@ struct UniformDataModule {
  */
 class Instance {
 
+  /** Debug scopes. */
+  static void *debug_scope_render_sample;
+
   uint64_t depsgraph_last_update_ = 0;
   bool overlays_enabled_;
 
@@ -62,6 +66,7 @@ class Instance {
   PipelineModule pipelines;
   LightModule lights;
   Camera camera;
+  Film film;
   RenderBuffers render_buffers;
   MainView main_view;
   //World world;
@@ -101,6 +106,7 @@ class Instance {
         pipelines(*this),
         lights(*this),
         camera(*this, uniform_data.data.camera),
+        film(*this, uniform_data.data.film),
         render_buffers(*this),
         main_view(*this){};
         //capture_view(*this),

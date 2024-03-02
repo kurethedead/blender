@@ -216,6 +216,9 @@ class MaterialModule {
   Material material_create(Object *ob,
                                  ::Material *blender_mat,
                                  eMaterialGeometry geometry_type);
+  MaterialPass material_pass_get(Object *ob,
+                                  ::Material *blender_mat,
+                                  eMaterialGeometry geometry_type);
 };
 
 /** \} */

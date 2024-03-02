@@ -15,8 +15,6 @@
 
 #include "fast64_shader.hh"
 
-#include "fast64_shadow.hh"
-
 #include "BLI_assert.h"
 
 namespace blender::fast64 {

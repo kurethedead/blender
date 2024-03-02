@@ -63,25 +63,26 @@ void Light::sync(const Object *ob)
   normalize_m4_m4_ex(object_mat.ptr(), ob->object_to_world, scale);
   
   /* Make sure we have consistent handedness (in case of negatively scaled Z axis). */
-  float3 cross = math::cross(float3(this->_right), float3(this->_up));
-  if (math::dot(cross, float3(this->_back)) < 0.0f) {
-    negate_v3(this->_up);
+  float3 cross = math::cross(float3(object_mat[0]), float3(object_mat[1]));
+  if (math::dot(cross, float3(object_mat[2])) < 0.0f) {
+    negate_v3(object_mat[1]);
   }
 
-  this->color = float3(&la->r) * la->energy;
-  this->direction = math::transform_point(math::to_quaternion(object_mat), float3(0,0,-1));
-  this->position = object_mat.location();
+  this->color = float4(float3(&la->r) * la->energy, 1);
+  this->direction = float4(math::normalize(math::transform_direction(object_mat, float3(0,0,-1))), 0);
+  this->position = float4(object_mat.location(), 0);
   this->type = to_light_type(la->type);
 
   // TODO: attenuation, specular
 
-  this->initialized = true;
+  //this->initialized = true;
 }
 
 void Light::debug_draw()
 {
 #ifndef NDEBUG
-  drw_debug_sphere(float3(_position), influence_radius_max, float4(0.8f, 0.3f, 0.0f, 1.0f));
+  // 10? just a random value
+  drw_debug_sphere(float3(position), 10, float4(0.8f, 0.3f, 0.0f, 1.0f));
 #endif
 }
 

@@ -1917,7 +1917,10 @@ typedef struct SceneEEVEE {
 } SceneEEVEE;
 
 typedef struct SceneFAST64 {
+  int flag;
   float ambient_light[4];
+  float overscan;
+  int _pad0, _pad1;
 } SceneFAST64;
 
 typedef struct SceneGpencil {

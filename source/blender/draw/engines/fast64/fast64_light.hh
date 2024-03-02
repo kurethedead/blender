@@ -20,6 +20,7 @@
 #include "fast64_shader.hh"
 #include "fast64_shader_shared.hh"
 #include "fast64_sync.hh"
+#include "fast64_defines.hh"
 
 namespace blender::fast64 {
 
@@ -89,6 +90,11 @@ class LightModule {
   void begin_sync();
   void sync_light(const Object *ob, ObjectHandle &handle);
   void end_sync();
+
+  template<typename PassType> void bind_resources(PassType &pass)
+  {
+    pass.bind_ubo(LIGHT_BUF_SLOT, &light_buf_);
+  }
 };
 
 /** \} */

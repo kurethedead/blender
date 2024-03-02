@@ -55,7 +55,7 @@ MaterialPass MaterialModule::material_pass_get(Object *ob,
                                                ::Material *blender_mat,
                                                eMaterialGeometry geometry_type)
 {
-  PassMain::Sub matpass = MaterialPass();
+  MaterialPass matpass = MaterialPass();
 
   // TODO: we only need a single shader, but static_shader_get() returns GPUShader
   matpass.gpumat = inst_.shaders.material_shader_get(blender_mat, geometry_type, F3D_MESH); // if we ever have more shaders, pull info from blender_mat

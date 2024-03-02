@@ -29,6 +29,8 @@
 
 namespace blender::fast64 {
 
+void *Instance::debug_scope_render_sample = nullptr;
+
 /* -------------------------------------------------------------------- */
 /** \name Initialization
  *
@@ -103,7 +105,7 @@ void Instance::view_update()
 void Instance::begin_sync()
 {
   materials.begin_sync();
-  camera.begin_sync();
+  camera.sync();
   //velocity.begin_sync(); /* NOTE: Also syncs camera. */
   lights.begin_sync();
   pipelines.begin_sync();
@@ -111,7 +113,7 @@ void Instance::begin_sync()
   gpencil_engine_enabled = false;
 
   main_view.sync();
-  world.sync();
+  //world.sync();
   film.sync();
   render_buffers.sync();
   //lookdev.sync();
@@ -273,7 +275,7 @@ void Instance::render_sample()
 
   //sampling.step();
 
-  capture_view.render_world();
+  //capture_view.render_world();
   //capture_view.render_probes();
   main_view.render();
   //lookdev_view.render();

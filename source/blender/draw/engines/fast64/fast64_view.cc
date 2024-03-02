@@ -96,7 +96,7 @@ void ShadingView::render()
   GPU_framebuffer_clear_color_depth(combined_fb_, clear_color, 1.0f);
 
   /* TODO(fclem): Move it after the first prepass (and hiz update) once pipeline is stabilized. */
-  inst_.lights.set_view(render_view_, extent_);
+  //inst_.lights.set_view(render_view_, extent_);
   inst_.pipelines.background.render(render_view_);
 
   // inst_.lookdev.render_overlay(view_fb_);
@@ -105,7 +105,7 @@ void ShadingView::render()
 
   //render_transparent_pass(rbufs);
 
-  inst_.lights.debug_draw(render_view_, combined_fb_);
+  //inst_.lights.debug_draw(render_view_, combined_fb_);
 
   //GPUTexture *combined_final_tx = render_postfx(rbufs.combined_tx);
   inst_.film.render(jitter_view_, rbufs.combined_tx);

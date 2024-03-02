@@ -19,3 +19,5 @@
 /* Uniform Buffers. */
 /* Slot 0 is GPU_NODE_TREE_UBO_SLOT. */
 #define UNIFORM_BUF_SLOT 1
+#define LIGHT_BUF_SLOT 2
+#define F3D_BUF_SLOT 3
