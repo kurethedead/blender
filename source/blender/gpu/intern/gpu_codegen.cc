@@ -847,6 +847,32 @@ bool GPU_pass_should_optimize(GPUPass *pass)
   return (GPU_backend_get_type() == GPU_BACKEND_METAL) && pass->should_optimize;
 }
 
+// Version of GPU_generate_pass that uses eShaderType as hash, since we only use pre-compiled shaders
+// also removes all codegen releated code
+// Note: Its important to use this function to set a GPUPass on a GPUMaterial, in order to handle ref counting
+GPUPass *GPU_generate_pass_static(GPUMaterial *material, GPUPass** external_cache, int shader_type, GPUShader* shader)
+{
+  if(external_cache[shader_type] == nullptr) {
+    GPUPass* pass = (GPUPass *)MEM_callocN(sizeof(GPUPass), "GPUPass");
+    pass->shader = shader;
+    pass->refcount = 1;
+    pass->create_info = nullptr;
+    pass->hash = shader_type;
+    pass->compiled = true;
+    pass->cached = false;
+    /* Only flag pass optimization hint if this is the first generated pass for a material.
+     * Optimized passes cannot be optimized further, even if the heuristic is still not
+     * favorable. */
+    pass->should_optimize = false;
+    external_cache[shader_type] = pass;
+  }
+  else {
+    GPUPass* pass = external_cache[shader_type];
+    pass->refcount++;
+  }
+  return external_cache[shader_type];
+}
+
 /** \} */
 
 /* -------------------------------------------------------------------- */

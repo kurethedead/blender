@@ -381,7 +381,7 @@ static void attr_input_name(GPUMaterialAttribute *attr)
 }
 
 /** Add a new varying attribute of given type and name. Returns nullptr if out of slots. */
-static GPUMaterialAttribute *gpu_node_graph_add_attribute(GPUNodeGraph *graph,
+GPUMaterialAttribute *gpu_node_graph_add_attribute(GPUNodeGraph *graph,
                                                           eCustomDataType type,
                                                           const char *name,
                                                           const bool is_default_color,

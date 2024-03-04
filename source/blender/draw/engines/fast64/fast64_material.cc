@@ -58,7 +58,9 @@ MaterialPass MaterialModule::material_pass_get(Object *ob,
   MaterialPass matpass = MaterialPass();
 
   // TODO: we only need a single shader, but static_shader_get() returns GPUShader
-  matpass.gpumat = inst_.shaders.material_shader_get(blender_mat, geometry_type, F3D_MESH); // if we ever have more shaders, pull info from blender_mat
+  //matpass.gpumat = inst_.shaders.material_shader_get(blender_mat, geometry_type, F3D_MESH); // if we ever have more shaders, pull info from blender_mat
+  matpass.gpumat = GPU_material_from_shader(inst_.scene, blender_mat, 
+    shader_uuid_from_material_type(geometry_type), inst_.shaders.get_pass_cache(), F3D_MESH, inst_.shaders.static_shader_get(F3D_MESH)); // if we ever have more shaders, pull info from blender_mat
 
   /* Returned material should be ready to be drawn. */
   BLI_assert(GPU_material_status(matpass.gpumat) == GPU_MAT_SUCCESS);

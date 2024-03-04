@@ -228,6 +228,14 @@ struct GPUTexture **gpu_material_ramp_texture_row_set(struct GPUMaterial *mat,
  */
 struct GPUTexture **gpu_material_sky_texture_layer_set(
     struct GPUMaterial *mat, int width, int height, const float *pixels, float *row);
+/** 
+ * Add a new varying attribute of given type and name. Returns nullptr if out of slots. 
+ */
+GPUMaterialAttribute *gpu_node_graph_add_attribute(GPUNodeGraph *graph,
+                                                          eCustomDataType type,
+                                                          const char *name,
+                                                          const bool is_default_color,
+                                                          const bool is_hair_length);
 
 #ifdef __cplusplus
 }

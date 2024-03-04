@@ -28,13 +28,13 @@ GPU_SHADER_INTERFACE_INFO(fast64_surf_iface, "interp")
     /* World Position. */
     .smooth(Type::VEC3, "pos")
     /* UV */
-    .smooth(Type::VEC2, "uv");
+    .smooth(Type::VEC2, "uv")
     /* UV with no perspective correction*/
-    .no_perspective(Type::VEC2, "uv_no_persp");
+    //.no_perspective(Type::VEC2, "uv_no_persp") // Can't mix interpolation modes with Vulkan backend
     /* World Normal. */
-    .smooth(Type::VEC3, "nor");
+    .smooth(Type::VEC3, "nor")
     /* Vertex Color */
-    .smooth(Type::VEC4, "vert_col");
+    .smooth(Type::VEC4, "vert_col")
     /* Light Color */
     .smooth(Type::VEC4, "vert_light");
 
@@ -43,10 +43,10 @@ GPU_SHADER_CREATE_INFO(fast64_geom_mesh)
     .additional_info("fast64_shared")
     .define("MAT_GEOM_MESH")
     .vertex_in(0, Type::VEC3, "pos")
-    .vertex_in(1, Type::VEC2, "uv");
+    .vertex_in(1, Type::VEC2, "uv")
     .vertex_in(2, Type::VEC3, "nor")
-    .vertex_in(3, Type::VEC4, "vertex_color");
-    .vertex_in(4, Type::VEC4, "vertex_alpha"); // separate layer for legacy reasons
+    .vertex_in(3, Type::VEC4, "vertex_color")
+    .vertex_in(4, Type::VEC4, "vertex_alpha") // separate layer for legacy reasons
     .vertex_source("fast64_geom_mesh_vert.glsl")
     .vertex_out(fast64_surf_iface)
     .additional_info("draw_modelmat_new", "draw_resource_id_varying", "draw_view");

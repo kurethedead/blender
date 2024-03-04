@@ -7,7 +7,6 @@
  */
 
 #pragma BLENDER_REQUIRE(draw_view_lib.glsl)
-//#pragma BLENDER_REQUIRE(fast64_colorspace_lib.glsl)
 #pragma BLENDER_REQUIRE(gpu_shader_math_vector_lib.glsl)
 #pragma BLENDER_REQUIRE(draw_math_geom_lib.glsl)
 
@@ -22,12 +21,12 @@ float film_display_depth_ammend(ivec2 texel, float depth)
 #endif
   /* Small offset to avoid depth test lessEqual failing because of all the conversions loss. */
   depth += 2.4e-7 * 4.0;
-  return saturate(depth);
+  return clamp(depth, 0.0, 1.0);
 }
 
 /** NOTE: out_depth is scene linear depth from the camera origin. */
 void film_process_data(ivec2 texel_film, out vec4 out_color, out float out_depth)
 {
   out_depth = 0.0;
-  out_color = texelFetch(in_combined_tx, texel_film, 0);
+  out_color = texelFetch(combined_tx, texel_film, 0);
 }

@@ -47,9 +47,11 @@ class ShaderModule {
   ShaderModule();
   ~ShaderModule();
 
+  GPUPass** get_pass_cache() { return gpu_passes_.data(); }
+
   GPUShader *static_shader_get(eShaderType shader_type);
-  GPUPass *generate_pass(GPUMaterial *material, GPUNodeGraph *graph, eShaderType shader_type);
-  GPUMaterial *material_shader_get(::Material *blender_mat, eMaterialGeometry geometry_type, eShaderType shader_type);
+  //GPUPass *generate_pass(GPUMaterial *material, GPUNodeGraph *graph, eShaderType shader_type);
+  //GPUMaterial *material_shader_get(::Material *blender_mat, eMaterialGeometry geometry_type, eShaderType shader_type);
 
   /** Only to be used by Instance constructor. */
   static ShaderModule *module_get();

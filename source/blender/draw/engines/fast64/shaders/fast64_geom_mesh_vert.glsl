@@ -4,7 +4,6 @@
 
 #pragma BLENDER_REQUIRE(draw_model_lib.glsl)
 #pragma BLENDER_REQUIRE(fast64_attributes_lib.glsl)
-//#pragma BLENDER_REQUIRE(fast64_surf_lib.glsl) 
 
 void main()
 {
@@ -13,13 +12,13 @@ void main()
 //  shadow_viewport_layer_set(int(drw_view_id), int(viewport_index_buf[drw_view_id]));
 //#endif
 
-  init_interface();
+  //init_interface();
 
   interp.pos = drw_point_object_to_world(pos);
   interp.nor = drw_normal_object_to_world(nor);
 
   interp.uv = uv;
-  interp.uv_no_persp = uv;
+  //interp.uv_no_persp = uv;
   
   interp.vert_col = vertex_color;
   interp.vert_col.a = dot(vertex_alpha.rgb, vec3(0.2126729, 0.7151522, 0.0721750)); // see colorToLuminance() in fast64 python

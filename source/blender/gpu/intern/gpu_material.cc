@@ -817,6 +817,75 @@ uint64_t GPU_material_uuid_get(GPUMaterial *mat)
   return mat->uuid;
 }
 
+GPUMaterial *GPU_material_from_shader(Scene *scene,
+                                                Material *ma,
+                                                uint64_t shader_uuid,
+                                                GPUPass** external_cache, 
+                                                int shader_type,
+                                                GPUShader* shader)
+{
+  /* Search if this material is not already cached. */
+  LISTBASE_FOREACH (LinkData *, link, &ma->gpumaterial) {
+    GPUMaterial *mat = (GPUMaterial *)link->data;
+    if (mat->uuid == shader_uuid) {
+      return mat;
+    }
+  }
+
+  // Create new material
+  GPUMaterial *mat = static_cast<GPUMaterial *>(MEM_callocN(sizeof(GPUMaterial), "GPUMaterial")); // calloc zeroes out data
+  mat->ma = ma;
+  mat->scene = scene;
+  mat->uuid = shader_uuid;
+  mat->flag = GPU_MATFLAG_UPDATED;
+  mat->status = GPU_MAT_SUCCESS;
+  mat->default_mat = nullptr;
+  mat->is_volume_shader = false;
+  //mat->graph.used_libraries = BLI_gset_new(
+  //    BLI_ghashutil_ptrhash, BLI_ghashutil_ptrcmp, "GPUNodeGraph.used_libraries");
+  mat->refcount = 1;
+  STRNCPY(mat->name, ma->id.name);
+  //if (is_lookdev) {
+  //  mat->flag |= GPU_MATFLAG_LOOKDEV_HACK;
+  //}
+
+  if (ma->f3d.is_transparent) {
+    GPU_material_flag_set(mat, GPU_MATFLAG_TRANSPARENT);
+  }
+
+  GPUNodeGraph *graph = gpu_material_node_graph(mat);
+  mat->pass = GPU_generate_pass_static(mat, external_cache, shader_type, shader);
+
+  // Normally node graph codegen automatically handles retrieving attributes/textures/uniforms
+  // However, in order to avoid larger rewrites, we reuse graph structure and manually add our desired attributes
+  // so that they can be extracted in GPUBatches, and can be used with material_set()
+  
+  GPUMaterialAttribute *col_attr = gpu_node_graph_add_attribute(graph, CD_AUTO_FROM_NAME, "Col", false, false);
+  GPUMaterialAttribute *alpha_attr = gpu_node_graph_add_attribute(graph, CD_AUTO_FROM_NAME, "Alpha", false, false);
+  GPUMaterialAttribute *uv_attr = gpu_node_graph_add_attribute(graph, CD_AUTO_FROM_NAME, "UVMap", false, false);
+
+  // textures
+  GPUSamplerState sampler_state = {
+    GPU_SAMPLER_FILTERING_DEFAULT,
+    GPU_SAMPLER_EXTEND_MODE_EXTEND,
+    GPU_SAMPLER_EXTEND_MODE_EXTEND,
+    GPU_SAMPLER_CUSTOM_COMPARE,
+    GPU_SAMPLER_STATE_TYPE_PARAMETERS};
+
+  //gpu_node_graph_add_texture(graph, tex0_image, tex0_image_user, nullptr, nullptr, false, sampler_state);
+  //gpu_node_graph_add_texture(graph, tex1_image, tex1_image_user, nullptr, nullptr, false, sampler_state);
+
+  // uniforms
+  //mat->ubo = GPU_uniformbuf_create_ex(sizeof(UniformDataBuf), uniform_data, "f3d_state");
+
+  // Add a linked list node for cached material list
+  LinkData *link = static_cast<LinkData *>(MEM_callocN(sizeof(LinkData), "GPUMaterialLink"));
+  link->data = mat;
+  BLI_addtail(&ma->gpumaterial, link);
+
+  return mat;
+}
+
 GPUMaterial *GPU_material_from_nodetree(Scene *scene,
                                         Material *ma,
                                         bNodeTree *ntree,

@@ -245,6 +245,12 @@ GPUMaterial *GPU_material_from_nodetree(Scene *scene,
                                         bool is_lookdev,
                                         GPUCodegenCallbackFn callback,
                                         void *thunk);
+GPUMaterial *GPU_material_from_shader(Scene *scene,
+                                                Material *ma,
+                                                uint64_t shader_uuid,
+                                                GPUPass** external_cache, 
+                                                int shader_type,
+                                                GPUShader* shader);
 
 void GPU_material_compile(GPUMaterial *mat);
 void GPU_material_free_single(GPUMaterial *material);

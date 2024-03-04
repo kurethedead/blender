@@ -21,6 +21,7 @@ set(INC
   # For *_info.hh includes.
   ../compositor/realtime_compositor
   ../draw/engines/eevee_next
+  ../draw/engines/fast64
   ../draw/engines/gpencil
   ../draw/engines/select
   ../draw/engines/workbench
@@ -689,6 +690,8 @@ set(SRC_SHADER_CREATE_INFOS
   ../draw/engines/eevee_next/shaders/infos/eevee_tracing_info.hh
   ../draw/engines/eevee_next/shaders/infos/eevee_velocity_info.hh
   ../draw/engines/eevee_next/shaders/infos/eevee_volume_info.hh
+  ../draw/engines/fast64/shaders/infos/fast64_film_info.hh
+  ../draw/engines/fast64/shaders/infos/fast64_material_info.hh
   ../draw/engines/gpencil/shaders/infos/gpencil_info.hh
   ../draw/engines/gpencil/shaders/infos/gpencil_vfx_info.hh
   ../draw/engines/overlay/shaders/infos/overlay_antialiasing_info.hh
